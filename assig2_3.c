@@ -8,7 +8,7 @@ int main(int argc , char *argv[]){
 	int pid = fork();
 	if(pid < 0)
 	{
-		
+
 	}
 	else if(pid == 0)
 	{
@@ -20,7 +20,7 @@ int main(int argc , char *argv[]){
 			if(x==0){
 				x=x;
 			}
-		}	
+		}
 	}
 	else
 	{
@@ -34,7 +34,7 @@ int main(int argc , char *argv[]){
 		int pid1 = fork();
 		if(pid1 < 0)
 		{
-			
+
 		}
 		else if(pid1 == 0)
 		{
@@ -45,7 +45,7 @@ int main(int argc , char *argv[]){
 				if(x==0){
 					x=x;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -55,7 +55,7 @@ int main(int argc , char *argv[]){
 				if(x==0){
 					x=x;
 				}
-			}			
+			}
 			wait();
 			wait();
 		}

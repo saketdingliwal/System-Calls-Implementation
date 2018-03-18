@@ -5,14 +5,14 @@
 
 int main(int argc, char const *argv[])
 {
-	
+
 	//saprintf(1, "my priority %d\n", getpriority(getpid()));
 	long x=0;
 	float z;
 	int pid = fork();
 	if(pid < 0)
 	{
-		
+
 	}
 	else if(pid == 0)
 	{
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
 			if(x==0){
 				x=x;
 			}
-		}	
+		}
 	}
 	else
 	{
@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
 		int pid1 = fork();
 		if(pid1 < 0)
 		{
-			
+
 		}
 		else if(pid1 == 0)
 		{
@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
 				if(x==0){
 					x=x;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -66,7 +66,7 @@ int main(int argc, char const *argv[])
 				if(x==0){
 					x=x;
 				}
-			}			
+			}
 			wait();
 			wait();
 		}

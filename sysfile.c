@@ -55,7 +55,6 @@ fdalloc(struct file *f)
 int
 sys_dup(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct file *f;
   int fd;
 
@@ -70,7 +69,6 @@ sys_dup(void)
 int
 sys_read(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct file *f;
   int n;
   char *p;
@@ -83,7 +81,6 @@ sys_read(void)
 int
 sys_write(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct file *f;
   int n;
   char *p;
@@ -96,7 +93,6 @@ sys_write(void)
 int
 sys_close(void)
 {
-  cprintf("%s ",__FUNCTION__);
   int fd;
   struct file *f;
 
@@ -110,7 +106,6 @@ sys_close(void)
 int
 sys_fstat(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct file *f;
   struct stat *st;
 
@@ -123,7 +118,6 @@ sys_fstat(void)
 int
 sys_link(void)
 {
-  cprintf("%s ",__FUNCTION__);
   char name[DIRSIZ], *new, *old;
   struct inode *dp, *ip;
 
@@ -190,7 +184,6 @@ isdirempty(struct inode *dp)
 int
 sys_unlink(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct inode *ip, *dp;
   struct dirent de;
   char name[DIRSIZ], *path;
@@ -293,7 +286,6 @@ create(char *path, short type, short major, short minor)
 int
 sys_open(void)
 {
-  cprintf("%s ",__FUNCTION__);
   char *path;
   int fd, omode;
   struct file *f;
@@ -344,7 +336,6 @@ sys_open(void)
 int
 sys_mkdir(void)
 {
-  cprintf("%s ",__FUNCTION__);
   char *path;
   struct inode *ip;
 
@@ -361,7 +352,6 @@ sys_mkdir(void)
 int
 sys_mknod(void)
 {
-  cprintf("%s ",__FUNCTION__);
   struct inode *ip;
   char *path;
   int major, minor;
@@ -382,11 +372,10 @@ sys_mknod(void)
 int
 sys_chdir(void)
 {
-  cprintf("%s ",__FUNCTION__);
   char *path;
   struct inode *ip;
   struct proc *curproc = myproc();
-
+  
   begin_op();
   if(argstr(0, &path) < 0 || (ip = namei(path)) == 0){
     end_op();
@@ -408,7 +397,6 @@ sys_chdir(void)
 int
 sys_exec(void)
 {
-  cprintf("%s ",__FUNCTION__);
   char *path, *argv[MAXARG];
   int i;
   uint uargv, uarg;
@@ -435,7 +423,6 @@ sys_exec(void)
 int
 sys_pipe(void)
 {
-  cprintf("%s ",__FUNCTION__);
   int *fd;
   struct file *rf, *wf;
   int fd0, fd1;

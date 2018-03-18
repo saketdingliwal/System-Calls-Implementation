@@ -6,18 +6,57 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+extern int v_toggle;
+extern int ps(void);
+extern int set_priority(int,int);
+extern int get_priority(int);
+
+
+int
+sys_add(void)
+{
+  int a,b;
+  if(argint(0,&a)<0 || argint(1,&b)<0)
+    return -1;
+  return a+b;
+}
+int
+sys_setpriority(void)
+{
+  int a,b;
+  if(argint(0,&a)<0 || argint(1,&b)<0)
+    return -1;
+  return set_priority(a,b);
+}
+int
+sys_getpriority(void)
+{
+  int a;
+  if(argint(0,&a)<0)
+    return -1;
+  return get_priority(a);
+}
+int
+sys_toggle(void)
+{
+  v_toggle = 1 - v_toggle;
+  return 0;
+}
+int
+sys_ps(void)
+{
+  return ps();
+}
 
 int
 sys_fork(void)
 {
-  cprintf("%s ",__FUNCTION__);
   return fork();
 }
 
 int
 sys_exit(void)
 {
-  cprintf("%s ",__FUNCTION__);
   exit();
   return 0;  // not reached
 }
@@ -25,14 +64,12 @@ sys_exit(void)
 int
 sys_wait(void)
 {
-  cprintf("%s ",__FUNCTION__);
   return wait();
 }
 
 int
 sys_kill(void)
 {
-  cprintf("%s ",__FUNCTION__);
   int pid;
 
   if(argint(0, &pid) < 0)
@@ -43,14 +80,12 @@ sys_kill(void)
 int
 sys_getpid(void)
 {
-  cprintf("%s ",__FUNCTION__);
   return myproc()->pid;
 }
 
 int
 sys_sbrk(void)
 {
-  cprintf("%s ",__FUNCTION__);
   int addr;
   int n;
 
@@ -65,7 +100,6 @@ sys_sbrk(void)
 int
 sys_sleep(void)
 {
-  cprintf("%s ",__FUNCTION__);
   int n;
   uint ticks0;
 
@@ -89,7 +123,6 @@ sys_sleep(void)
 int
 sys_uptime(void)
 {
-  cprintf("%s ",__FUNCTION__);
   uint xticks;
 
   acquire(&tickslock);
