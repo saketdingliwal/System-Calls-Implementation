@@ -89,6 +89,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->priority = 5;
+  p->counter = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -178,12 +179,12 @@ int
 ps(void)
 {
   static char *states[] = {
-  [UNUSED]    "unused",
-  [EMBRYO]    "embryo",
-  [SLEEPING]  "sleep ",
-  [RUNNABLE]  "runble",
-  [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+  [UNUSED]    "UNUSED",
+  [EMBRYO]    "EMBRYO",
+  [SLEEPING]  "SLEEPING",
+  [RUNNABLE]  "RUNNABLE",
+  [RUNNING]   "RUNNING",
+  [ZOMBIE]    "ZOMBIE"
   };
   char *state;
   struct proc *p;
@@ -204,6 +205,7 @@ ps(void)
 int
 set_priority(int pid,int new_priority)
 {
+  if(new_priority<=0 || new_priority>20) return -1;
   struct proc *p;
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -220,18 +222,19 @@ set_priority(int pid,int new_priority)
 int
 get_priority(int pid)
 {
+  int val = -1;
   struct proc *p;
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
     if(p->pid==pid)
     {
-      return p->priority;
+      val = p->priority;
       break;
     }
   }
   release(&ptable.lock);
-  return 0;
+  return val;
 }
 
 // Create a new process copying p as the parent.
@@ -383,9 +386,10 @@ void
 scheduler(void)
 {
   struct proc *p;
+  struct proc *highestp;
+  struct proc *p1;
   struct cpu *c = mycpu();
   c->proc = 0;
-
   for(;;){
     // Enable interrupts on this processor.
     sti();
@@ -399,22 +403,45 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      highestp = p;
+      for(p1 = p; p1 < &ptable.proc[NPROC]; p1++){
+        if(p1->state != RUNNABLE)
+          continue;
+        if(p1->priority > highestp->priority)
+          highestp = p1;
+      }
+      for(p1 = ptable.proc; p1 < p; p1++){
+        if(p1->state != RUNNABLE)
+          continue;
+        if(p1->priority > highestp->priority)
+          highestp = p1;
+      }
+      p = highestp;
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
-
       swtch(&(c->scheduler), p->context);
       switchkvm();
+
+      // for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++){
+      //   if(p1->state != RUNNABLE && p1->state!= RUNNING)
+      //     continue;
+      //   p1->counter+=1;
+      //   if(p1->counter==50)
+      //   {
+      //     p1->counter = 0;
+      //     if(p1->priority<20)
+      //       p1->priority +=1;
+      //   }
+      // }
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
-
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
